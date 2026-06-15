@@ -1,12 +1,17 @@
-\documentclass{report}
+\documentclass[11pt, a4paper]{report}
+
+\input{packages}
 
 \begin{document}
 
-    \title{Mathematical Foundations of Astrophotographic Image Processing}
-    \author{Stefano de Angelis, Brandon Flores}
-
-    \maketitle
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \centering
+        {\huge Mathematical Foundations of Astrophotographic Image Processing\par}
+    \end{titlepage}
 
     \tableofcontents
+
+    \include{chapters/introduction}
 
 \end{document}
