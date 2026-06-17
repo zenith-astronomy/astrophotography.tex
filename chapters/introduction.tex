@@ -1,6 +1,28 @@
 \section{Introduction}
-Astrophotography, as a hobby, sits at an unusual intersection between art and measurement. It is often approached as a craft guided by experience, software tools, and the knowledge of other imagers. This empirical method can be quite effective: many excellent images are produced by following established recipes or adopting the techniques of skilled processors. However, recipes alone do not always explain why a method works, when it fails, or what assumptions it makes about the data.\\[\baselineskip]
-This becomes especially important as processing tools grow more sophisticated. Modern, AI-based deconvolution, denoising, and sharpening tools can produce substantial improvements, but their inner workings are difficult to inspect. As a result, we often apply powerful transformations to our astronomical data without a solid understanding of what they do, what assumptions they rely on, or how they alter the underlying signal. This intuitive approach may be acceptable when the aim is to produce aesthetically pleasing images; for quantitative work or scientific analysis, it is simply insufficient.
+
+Astrophotography, as a hobby, is often approached as a craft guided by experience, software tools, and a wide variety of workflows.
+This empirical method can be quite effective; in fact, many excellent images are produced simply by following established ``recipes'' or adopting the techniques of skilled processors.
+Yet reliance on practice over principle can also create confusion: different workflows may yield similar results, but the reasons behind their success often remain unclear.
+The issue is amplified by the widespread use of “black-box” software tools, particularly modern AI-based deconvolution or sharpening algorithms (such as BlurXTerminator), whose internal mechanisms are not publicly documented.
+As a result, we often apply powerful transformations to our astronomical data without a solid understanding of what they do, what assumptions they depend on, or how they alter the underlying signal.
+This intuitive, tool-driven approach is perfectly acceptable when the aim is to produce aesthetically pleasing images, but it becomes inadequate when we wish to extract quantitative information or pursue scientific analysis.
+\\[\baselineskip]
+This manual adopts a different perspective; here, astrophotography processing is treated not as an intuitive craft but as a discipline grounded in a clear mathematical and physical model of image formation.
+By making these foundations explicit, we aim to clarify why common methods work, where their validity breaks down, and what limitations they impose.
+Our objectives are twofold:
+\begin{enumerate}
+    \item to develop a clear mathematical model of digital astronomical images, beginning with physical assumptions about the optical system, the atmosphere, and the detector;
+    \item to use this model as a foundation for understanding, deriving, and justifying common processing techniques.
+\end{enumerate}
+In other words, by establishing a formal framework, we seek to bridge the gap between practice and theory.
+Our aim is to make clear why processing techniques work, under what assumptions they are valid, and where their limitations lie.
+\\[\baselineskip]
+Throughout this guide, short coding examples are provided to illustrate how the mathematical models discussed can be translated into concrete algorithms.
+These examples are intentionally minimal and emphasize clarity over performance.
 \subsection{Scope and assumptions}
-This manual focuses primarily on image processing and therefore generally omits topics related to image acquisition, such as telescope choice, mounts, guiding, filters, and sensors, except where they directly affect a processing method (e.g. DRIZZLE). The reader is thus assumed to be familiar with the basic terminology and practical aspects of astrophotography.\\[\baselineskip]
-As for the mathematical side, we assume comfort with basic Calculus, Linear Algebra, and probability distributions. Technical observations and clarifications are placed in specially marked boxes in order to preserve the main flow of the exposition. These boxes are used for subtleties, rigorous definitions, and optional remarks that may deepen understanding but are not essential on a first reading.
+This manual focuses on the mathematical foundations of image processing and therefore generally omits image acquisition topics, such as telescope choice, mounts, guiding, filters, or sensors, except where they directly affect a processing method (e.g. DRIZZLE).
+The reader is thus assumed to be familiar with the basic terminology and practical aspects of astrophotography.
+\\[\baselineskip]
+As for the mathematical side, we will assume comfort with basic calculus, linear algebra and probability distributions.
+To keep the exposition clear, we will present technical observations and clarifications in specially marked boxes.
+These boxes highlight subtleties, rigorous definitions, or optional remarks that deepen understanding without interrupting the main flow of the chapter.
