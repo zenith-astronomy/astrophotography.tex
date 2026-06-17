@@ -1,0 +1,80 @@
+\chapter{Image formation}
+Before we can discuss any processing technique, we must first understand what a digital astronomical image truly represents.
+Each pixel in a raw frame is the result of a long chain of transformations: light from the heavens passes through the atmosphere and the optical system, is blurred by the point spread function (PSF), sampled by a detector with its own imperfections, and finally corrupted by noise.
+\\[\baselineskip]
+The goal of this chapter is to formalize this process and build a \textbf{forward model} that describes how the true sky is mapped onto the recorded image.
+Establishing such a model serves two purposes.
+Firstly, it clarifies which features in the data reflect genuine astronomical signals and which are artifacts of the imaging system or the environment; secondly, it provides a principled foundation for subsequent processing steps: calibration, alignment, integration, noise reduction, deconvolution, and more can all be understood as attempts to invert or compensate for specific components of the forward model.
+
+\section{Coordinate systems}
+A central difficulty in modelling astronomical image formation is that photons originate on the celestial sphere but are ultimately recorded on a (usually) flat detector, which we will henceforth refer to as the \textbf{focal plane}.
+To treat this mapping rigorously we introduce two coordinate systems. The first, $(\varphi,\vartheta)$, denotes angular positions on the sky and specifies the true locations of astronomical sources; whether these angles correspond to right ascension and declination or to azimuth and altitude is immaterial at this stage.
+The second system, $(x,y)$, denotes Cartesian coordinates on the detector where incoming photons are registered.
+These coordinates are typically expressed in micrometres or millimetres, although the particular choice of units is not yet relevant.
+\\[\baselineskip]
+This distinction between spherical and planar coordinates is fundamental: the process of mapping the sky onto the detector necessarily involves a projection, which can introduce geometric distortions.
+Understanding these coordinate systems allows us to model the optical mapping rigorously, to define the point-spread function properly, and to later describe how each pixel in a digital image relates back to a particular region of the sky.\\[\baselineskip]
+In the next section, we will discuss how the optical system maps points on the celestial sphere to positions on the detector.
+Although this transformation may appear complex at first glance, we will see that assuming a sufficiently small field of view greatly simplifies it.
+
+\section{Sky and focal-plane signal}
+The first step in understanding image formation is to describe the \textbf{true sky signal}
+\[
+    \mathcal{S}_{sky}(\varphi,\vartheta).
+\]
+This function represents the intrinsic brightness of the astronomical scene on the celestial sphere, measured in photons per unit solid angle per unit time.
+It provides a complete description of the ideal sky, independent of any telescope, atmosphere, or detector.
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!50!black, title=Technical note]
+    It is natural to ask if we are allowed to define $\mathcal{S}_{sky}(\varphi,\vartheta)$ at a single point while measuring it in photons per unit solid angle per unit time. This is indeed consistent: the value of $\mathcal{S}_{sky}$ at a given direction $(\varphi,\vartheta)$ represents the density of photons per unit solid angle, so multiplying it by the solid angle of any finite patch of sky gives the total number of photons coming from that patch. Formally, for a small patch $\Delta\Omega$ around $(\varphi,\vartheta)$
+    \[
+    N_{photons}=\iint_{\Delta\Omega}\mathcal{S}_{sky}(\varphi,\vartheta)\,d\Omega.
+    \]
+    Defining the sky signal as a continuous function is not only mathematically valid, but also extremely powerful as it allows us to utilize the tools of Calculus.
+\end{tcolorbox}\vspace{2mm}\noindent
+We now ask how the ideal celestial radiance $\mathcal{S}_{sky}$ is transferred to the detector.
+Each point $(\varphi,\vartheta)$ on the sky corresponds, through the telescope optics, to a specific point on the focal plane; under ideal, aberration-free conditions, every such sky direction would map to a unique \textbf{nominal focal-plane location} $(u,v)$.
+This nominal point represents where the optical geometry alone would place the incoming light from that sky direction.
+\\[\baselineskip]
+To formalise this mapping from the heavens to the detector, we introduce a function
+\[
+    \boldsymbol{\mathfrak{m}}:(\varphi,\vartheta)\mapsto(u,v)
+\]
+so that for a given location $(\varphi,\vartheta)$ in the sky, the corresponding focal-plane location is
+\[
+    (u,v)=\boldsymbol{\mathfrak{m}}(\varphi,\vartheta)=\left(\mathfrak{m}_1(\varphi,\vartheta),\mathfrak{m}_2(\varphi,\vartheta)\right).
+\]
+At this stage, we do not need to specify the exact analytical form of $\boldsymbol{\mathfrak{m}}$; in practice, $\boldsymbol{\mathfrak{m}}$ accounts for how incoming light rays from different sky directions are focused onto the detector, capturing the mapping from angular coordinates to planar coordinates.\\[\baselineskip]
+The brightness at a focal-plane location $(u,v)$ originates from the sky region
+\[
+    \boldsymbol{\mathfrak{m}}^{-1}(u,v)=\left(\mathfrak{m}_1^{-1}(u,v),\mathfrak{m}_2^{-1}(u,v)\right)=\left(\varphi(u,v),\vartheta(u,v)\right),
+\]
+where $\varphi(u,v)$ and $\vartheta(u,v)$ denote the components of the inverse mapping.
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!50!black, title=Technical note]
+    The inverse mapping $\boldsymbol{\mathfrak{m}}^{-1}$ is well defined because the optical system provides a one-to-one correspondence between directions on the sky and nominal focal-plane points.
+    Formally, if $\boldsymbol{\mathfrak{m}}$ is bijective over the considered patch of sky, each detector coordinate corresponds to a unique sky direction.
+    In practice, this is the case for a sufficiently small field of view.
+\end{tcolorbox}\vspace{2mm}\noindent
+To conserve photon flux, we must also account for how areas on the sky deform when projected onto the focal plane.
+A small patch on the sky described by $d\varphi d\vartheta$ generally does not map to an equal area $dudv$ on the detector.
+For sufficiently small fields of view, the mapping can be treated as locally linear; in this regime, instead of carrying the full Jacobian of the transformation (see Technical note), we can replace it with a constant scale factor $k\in\mathbb{R}$ that captures the average conversion between sky solid angle and focal-plane area.
+\\[\baselineskip]
+With this simplification in place, it is natural to define the \textbf{ideal focal-plane signal}, denoted $\mathcal{S}_{focal}(u,v)$, which represents the brightness on the focal surface before any optical blurring or detector effects; when the FOV is sufficiently small, this is simply
+\begin{equation} \label{focal signal definition}
+    \mathcal{S}_{focal}(u,v)\doteq k\,\mathcal{S}_{sky}\left(\boldsymbol{\mathfrak{m}}^{-1}(u,v)\right).
+\end{equation}
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!50!black, title=Technical note]
+    When the field of view is not assumed to be small, the mapping $\boldsymbol{\mathfrak{m}}^{-1}$ distorts areas in a way that we cannot consider constant in the entire field. More precisely, we have that
+    \[
+        k=\left|\det{\mathcal{J}}_{\boldsymbol{\mathfrak{m}}^{-1}}(u,v)\right|,
+    \]
+    where $\mathcal{J}_{\boldsymbol{\mathfrak{m}}^{-1}}(u,v)$ is the Jacobian of the inverse mapping and is defined as
+    \[
+        \mathcal{J}_{\boldsymbol{\mathfrak{m}}^{-1}}(u,v)\doteq\begin{pmatrix}
+            \dfrac{\partial\varphi}{\partial u}&\dfrac{\partial\varphi}{\partial v}\\[4mm]\dfrac{\partial\vartheta}{\partial u}&\dfrac{\partial\vartheta}{\partial v}
+        \end{pmatrix}.
+    \]
+    Therefore
+    \[
+        k=\left|\dfrac{\partial\varphi}{\partial u}\dfrac{\partial\vartheta}{\partial v}-\dfrac{\partial\varphi}{\partial v}\dfrac{\partial\vartheta}{\partial u}\right|.
+    \]
+\end{tcolorbox}\vspace{2mm}\noindent
