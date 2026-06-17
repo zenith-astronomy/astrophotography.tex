@@ -78,3 +78,33 @@ With this simplification in place, it is natural to define the \textbf{ideal foc
         k=\left|\dfrac{\partial\varphi}{\partial u}\dfrac{\partial\vartheta}{\partial v}-\dfrac{\partial\varphi}{\partial v}\dfrac{\partial\vartheta}{\partial u}\right|.
     \]
 \end{tcolorbox}\vspace{2mm}\noindent
+
+\section{Degradation of the image}
+
+\subsection{Shot noise}
+
+It is physically impossible to produce a noise-free image due to the quantized nature of light.
+At some region of the sky, given the parameters of our imaging setup, we will expect some rate at which photons arrive at the corresponding region of the detector.
+This rate is not constrained to be an integer value, but the arrival of photons over that unit of time is.
+Aside from the integer values being unable to exactly represent the rate at which photons arrive at a particular region of a detector, we will also find that photons sometimes arrive in numbers significantly lower or higher than the average rate.
+There are many techniques to reduce this noise, known as \textit{shot noise}, but it can never be eliminated.
+\\[\baselineskip]
+Shot noise follows the \textit{Poisson distribution}, which has the probability mass function
+\begin{flalign}
+\operatorname{Poisson}\left(\lambda, k\right) & =
+    \frac{\lambda^{k} e^{-\lambda}}{k!}
+\end{flalign}
+where $\lambda$ is the expected rate of some event over a unit of time, and $k$ is the number of times the event occurs for which we are calculating the probability.
+The Poisson distribution has variance equal to $\lambda$, and thus a standard deviation equal to $\sqrt{\lambda}$.
+This means that in an absolute sense, the noise increases with the number of photons.
+But the amount of noise relative to the signal, $\frac{\sqrt{\lambda}}{\lambda}$, decreases with the number of photons collected.
+In other words, the signal-to-noise ratio (SNR), $\frac{\lambda}{\sqrt{\lambda}}$, increases with the number of photons collected.
+This is why we take long exposures and stack images as part of astrophotography: by collecting more photons, we reduce the noise intrinsic to the nature of light.
+\\[\baselineskip]
+When $\lambda$ is sufficiently large (a commonly used rule of thumb is $\lambda \geq 20$), the Poisson distribution can be approximated by a Gaussian distribution with mean and variance $\lambda$.
+However, this fact should not be taken to imply that shot noise behaves like what is usually termed "Gaussian noise."
+Often, "Gaussian noise" refers to \textit{additive white Gaussian noise} (AWGN), which is uncorrelated with either the image space or the signal itself and added to the image data.
+This is a good model for certain sources of image noise, such as thermal noise.
+But shot noise is correlated with the signal strength and cannot be thought of as an additive term.
+
+\subsection{Diffraction}
